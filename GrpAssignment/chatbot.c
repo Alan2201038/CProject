@@ -42,6 +42,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <Windows.h>
 #include "chat1002.h"
 
 
@@ -170,6 +171,7 @@ int chatbot_is_load(const char *intent) {
  */
 int chatbot_do_load(int inc, char *inv[], char *response, int n) {
 
+	/*fopen("INF1002_Group Project Assignment_Sample.ini", "r+");*/
 	/* to be implemented */
 	
 	return 0;
@@ -210,9 +212,29 @@ int chatbot_is_question(const char *intent) {
  *   0 (the chatbot always continues chatting after a question)
  */
 int chatbot_do_question(int inc, char *inv[], char *response, int n) {
+	int entityPosition =1;
+	if (compare_token(inv[1] , "is") == 0 ||compare_token(inv[1] , "are") == 0){
+		entityPosition =2;
+	}
+	char entityStr[MAX_INPUT];
+	for( int i=0;i<MAX_INPUT; i++ ){
+ 		entityStr[i]='\0';
+	}
+	for( int i=0; i<inc-entityPosition; i++ ){
+		if(i>0){
+			strcat(entityStr, " ");
+		}	
+		strcat(entityStr , inv[entityPosition + i]);
+	}
+	printf("%s\n",entityStr);
 
-	/* to be implemented */
-	knowledge_get(inv[0],inv[2],response,n);
+	if (knowledge_get(inv[0],entityStr,response,n)==0){
+		knowledge_get(inv[0],entityStr,response,n);
+	}else {
+		char answer[MAX_INPUT];
+		prompt_user( answer, n , "I don't know. %s is %s?", inv[0],entityStr);
+		knowledge_put(inv[0], entityStr , answer);
+	}
 	return 0;
 
 }

@@ -16,6 +16,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "chat1002.h"
+#include <Windows.h>
 
 /*
  * Get the response to a question.
@@ -32,6 +33,12 @@
  *   KB_INVALID, if 'intent' is not a recognised question word
  */
 int knowledge_get(const char *intent, const char *entity, char *response, int n) {
+	LPCSTR ini = "./INF1002_Group Project Assignment_Sample.ini";
+	GetPrivateProfileString(intent, entity, 0, response , n, ini);
+	if(GetPrivateProfileString(intent, entity, 0, response , n, ini)){
+		GetPrivateProfileString(intent, entity, 0, response , n, ini);
+		return KB_OK;
+	}
 
 	/* to be implemented */
 
@@ -58,6 +65,7 @@ int knowledge_get(const char *intent, const char *entity, char *response, int n)
 int knowledge_put(const char *intent, const char *entity, const char *response) {
 
 	/* to be implemented */
+	printf("%s is %s, %s.\n",intent ,entity ,response);
 
 	return KB_INVALID;
 
