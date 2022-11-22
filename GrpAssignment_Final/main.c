@@ -8,8 +8,8 @@
  */
 
 #include "chat1002.h"
-#include "chatbot.c"
 #include "knowledge.c"
+#include "chatbot.c"
 #include <ctype.h>
 #include <stdarg.h>
 #include <stdio.h>

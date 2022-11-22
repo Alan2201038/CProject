@@ -1,23 +1,23 @@
- /*
-    * INF1002 (C Language) Group Project.
-    *
-    * This file implements the chatbot's knowledge base.
-    *
-    * knowledge_get() retrieves the response to a question.
-    * knowledge_put() inserts a new response to a question.
-    * knowledge_read() reads the knowledge base from a file.
-    * knowledge_reset() erases all of the knowledge.
-    * knowledge_write() saves the knowledge base in a file.
-    *
-    * You may add helper functions as necessary.
-    */
+/*
+ * INF1002 (C Language) Group Project.
+ *
+ * This file implements the chatbot's knowledge base.
+ *
+ * knowledge_get() retrieves the response to a question.
+ * knowledge_put() inserts a new response to a question.
+ * knowledge_read() reads the knowledge base from a file.
+ * knowledge_reset() erases all of the knowledge.
+ * knowledge_write() saves the knowledge base in a file.
+ *
+ * You may add helper functions as necessary.
+ */
 
 #include "chat1002.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-    /*Additional declaration of global variables for head pointers*/
+/*Additional declaration of global variables for head pointers*/
 Node *who_ptr;
 Node *what_ptr;
 Node *where_ptr;
@@ -115,7 +115,6 @@ Node *create_node(const char *entity, const char *response) {
  * copied to the response buffer) KB_NOTFOUND, if no response could be found
  *   KB_INVALID, if 'intent' is not a recognised question word
  */
-
 int knowledge_get(const char *intent, const char *entity, char *response,
                   int n) {
   int res = KB_INVALID;
@@ -214,10 +213,9 @@ int knowledge_put(const char *intent, const char *entity,
  */
 int knowledge_read(FILE *f) {
 
-  /* to be implemented */
   int s_pairs = 0;
   char buffer[MAX_ENTITY + MAX_RESPONSE + 2];
-  char *start, *end, *intent, *token;
+  char *start=NULL, *end=NULL, *intent = NULL, *token=NULL;
   Node *temp_ptr = NULL;
   const char delimiter[2] = "=";
   int entity_count = 0;
@@ -225,7 +223,6 @@ int knowledge_read(FILE *f) {
   char *entity, *response;
   memset(buffer, 0, strlen(buffer));
   while (fgets(buffer, MAX_ENTITY + MAX_RESPONSE + 2, f) != NULL) {
-    // printf("Value in line is %s", buffer);
     start = strstr(buffer, "[");
     if (start != NULL) {
       start += strlen("[");
@@ -235,27 +232,32 @@ int knowledge_read(FILE *f) {
         memcpy(intent, start, strlen(start) - strlen(end));
         intent[end - start] = '\0';
       }
-    } else if (strstr(buffer, delimiter)) {
-      // Need to call knowledge_put with entity and response
-      token = strtok(buffer, delimiter);
-      entity = token;
-      // printf("Entity is %s\n", entity);
-      token = strtok(NULL, delimiter);
-      response = token;
-      if (response) {
-        for (int i = 0; i < strlen(response); i++) {
-          if (response[i] == '\n') {
-            response[i] = '\0';
+    }
+    else if (strstr(buffer, delimiter) && intent != NULL) {
+      if (compare_token(intent, "what") == 0 ||
+          compare_token(intent, "where") == 0 ||
+          compare_token(intent, "who") == 0) 
+      {
+        //only saves
+        token = strtok(buffer, delimiter);
+        entity = token;
+        token = strtok(NULL, delimiter);
+        response = token;
+        if (response) {
+          for (int i = 0; i < strlen(response); i++) {
+            if (response[i] == '\n') {
+              response[i] = '\0';
+            }
           }
         }
+        knowledge_put(intent, entity, response);
+        entity_count++;
       }
-      // response[strlen(response) - 1] = '\0';
-      knowledge_put(intent, entity, response);
-      entity_count++;
-      // printf("%d", entity_count);
+      else 
+      {
+        continue;
+      }
     }
-
-    // knowledge_put(temp_ptr,entity,response);
   }
   return entity_count;
 }
@@ -296,7 +298,7 @@ void knowledge_reset() {
  * Input:
  *   f - the file
  */
-void knowledge_write(FILE *f) { /* to be implemented */
+void knowledge_write(FILE *f) { 
   char buffer[MAX_ENTITY + MAX_RESPONSE + 2];
   Node *temp_ptr = NULL;
   const char delimiter[2] = "=";
@@ -327,7 +329,7 @@ void knowledge_write(FILE *f) { /* to be implemented */
   }
   if (where_ptr != NULL) {
     fprintf(f, "[where]\n");
-    temp_ptr = temp_ptr;
+    temp_ptr = where_ptr;
     while (temp_ptr != NULL) {
       entity = temp_ptr->entity;
       response = temp_ptr->response;

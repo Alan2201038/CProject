@@ -76,11 +76,6 @@ int chatbot_main(int inc, char *inv[], char *response, int n) {
     return 0;
   }
 
-  /*if (inc > 256) {
-    snprintf(response, n, "Too many characters, Please try again.");
-    return 0;
-  }*/
-
   /* look for an intent and invoke the corresponding do_* function */
   if (chatbot_is_exit(inv[0]))
     return chatbot_do_exit(inc, inv, response, n);
@@ -124,9 +119,8 @@ int chatbot_is_exit(const char *intent) {
  *   0 (the chatbot always continues chatting after a question)
  */
 int chatbot_do_exit(int inc, char *inv[], char *response, int n) {
-
+  knowledge_reset();
   snprintf(response, n, "Goodbye!");
-
   return 1;
 }
 
@@ -141,8 +135,6 @@ int chatbot_do_exit(int inc, char *inv[], char *response, int n) {
  *  0, otherwise
  */
 int chatbot_is_load(const char *intent) {
-
-  /* to be implemented */
   return compare_token(intent, "load") == 0;
 }
 
@@ -156,7 +148,6 @@ int chatbot_is_load(const char *intent) {
  *   0 (the chatbot always continues chatting after loading knowledge)
  */
 int chatbot_do_load(int inc, char *inv[], char *response, int n) {
-  /* to be implemented */
   int entity_count;
   if (inc > 1) {
     int filePosition = 1;
@@ -174,7 +165,6 @@ int chatbot_do_load(int inc, char *inv[], char *response, int n) {
       }
       strcat(fileStr, inv[i]);
     }
-    // printf("%s\n", fileStr);
     FILE *f;
     f = fopen(fileStr, "r");
     if (f == NULL) {
@@ -187,7 +177,6 @@ int chatbot_do_load(int inc, char *inv[], char *response, int n) {
              "I have read %d entities. I have %s %s into my system.",
              entity_count, inv[0], fileStr);
     fclose(f);
-    // snprintf(response, n, "I have %s %s into my system.", inv[0], fileStr);
     return 0;
   } else {
     snprintf(response, n, "Please enter a file name after the load command!");
@@ -206,9 +195,6 @@ int chatbot_do_load(int inc, char *inv[], char *response, int n) {
  *  0, otherwise
  */
 int chatbot_is_question(const char *intent) {
-
-  /* to be implemented */
-
   return compare_token(intent, "what") == 0 ||
          compare_token(intent, "where") == 0 ||
          compare_token(intent, "who") == 0;
@@ -234,13 +220,13 @@ int chatbot_do_question(int inc, char *inv[], char *response, int n) {
     snprintf(response, n, "Please enter an entity.");
     return 0;
   }
-  if (inv[1]){
+  if (inv[1]) {
     if (compare_token(inv[1], "is") == 0 || compare_token(inv[1], "are") == 0) {
       entityPosition = 2;
     }
   }
 
-  if (inv[entityPosition + 1]&&inv[entityPosition]) {
+  if (inv[entityPosition + 1] && inv[entityPosition]) {
     if (compare_token(inv[entityPosition], "the") == 0) {
       entityPosition++;
     }
@@ -276,10 +262,6 @@ int chatbot_do_question(int inc, char *inv[], char *response, int n) {
     snprintf(response, n, "Thank you.");
   }
   return 0;
-
-  // /* to be implemented */
-  //	knowledge_get(inv[0],inv[2],response,n);
-  //	return 0;
 }
 
 /*
@@ -293,7 +275,6 @@ int chatbot_do_question(int inc, char *inv[], char *response, int n) {
  *  0, otherwise
  */
 int chatbot_is_reset(const char *intent) {
-
   return compare_token(intent, "reset") == 0;
 }
 
@@ -323,9 +304,6 @@ int chatbot_do_reset(int inc, char *inv[], char *response, int n) {
  *  0, otherwise
  */
 int chatbot_is_save(const char *intent) {
-
-  /* to be implemented */
-
   return compare_token(intent, "save") == 0;
 }
 
