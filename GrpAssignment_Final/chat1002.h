@@ -10,23 +10,34 @@
 
 #include <stdio.h>
 
-/* the maximum number of characters we expect in a line of input (including the terminating null)  */
-#define MAX_INPUT    256
+/* the maximum number of characters we expect in a line of input (including the
+ * terminating null)  */
+#define MAX_INPUT 256
 
-/* the maximum number of characters allowed in the name of an intent (including the terminating null)  */
-#define MAX_INTENT   32
+/* the maximum number of characters allowed in the name of an intent (including
+ * the terminating null)  */
+#define MAX_INTENT 32
 
-/* the maximum number of characters allowed in the name of an entity (including the terminating null)  */
-#define MAX_ENTITY   64
+/* the maximum number of characters allowed in the name of an entity (including
+ * the terminating null)  */
+#define MAX_ENTITY 64
 
-/* the maximum number of characters allowed in a response (including the terminating null) */
+/* the maximum number of characters allowed in a response (including the
+ * terminating null) */
 #define MAX_RESPONSE 256
 
 /* return codes for knowledge_get() and knowledge_put() */
-#define KB_OK        0
+#define KB_OK 0
 #define KB_NOTFOUND -1
-#define KB_INVALID  -2
-#define KB_NOMEM    -3
+#define KB_INVALID -2
+#define KB_NOMEM -3
+
+/*Type definition for Nodes*/
+typedef struct node {
+  char entity[MAX_ENTITY];
+  char response[MAX_RESPONSE];
+  struct node *next;
+} Node;
 
 /* functions defined in main.c */
 int compare_token(const char *token1, const char *token2);
@@ -48,10 +59,15 @@ int chatbot_is_save(const char *intent);
 int chatbot_do_save(int inc, char *inv[], char *response, int n);
 
 /* functions defined in knowledge.c */
-int knowledge_get(const char *intent, const char *entity, char *response, int n);
+int knowledge_get(const char *intent, const char *entity, char *response,
+                  int n);
 int knowledge_put(const char *intent, const char *entity, const char *response);
 void knowledge_reset();
 int knowledge_read(FILE *f);
 void knowledge_write(FILE *f);
+void push_to_list(Node *head, Node *new_node);
+Node *create_node(const char *entity, const char *response);
+void write_section_to_file(FILE *f, char *entity, char *response, char *buffer,
+                           const char *delimiter, const char *end);
 
 #endif
