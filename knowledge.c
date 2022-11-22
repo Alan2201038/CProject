@@ -260,6 +260,7 @@ int knowledge_read(FILE *f) {
       }
       else 
       {
+        free(intent);
         continue;
       }
     }

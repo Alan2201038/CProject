@@ -277,10 +277,10 @@ int chatbot_do_question(int inc, char *inv[], char *response, int n) {
   } else {
     char answer[MAX_INPUT];
     prompt_user(answer, n, "I don't know. %s is %s?", inv[0], returnStr);
-    if (answer[0] == NULL) {
+    if (answer[0] == '\0') {
       do {
         prompt_user(answer, n, "Please enter something.");
-      } while (answer[0] == NULL);
+      } while (answer[0] == '\0');
     }
     int success=knowledge_put(inv[0], entityStr, answer);
     if(success==-3){
